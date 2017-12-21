@@ -53,6 +53,10 @@ const proxy = {
     $body: postRule,
   },
   'GET /api/notices': getNotices,
+  // mockjs 使用
+  // 'GET /api/tags': mockjs.mock({
+  //   'list|100': [{ name: '@city', 'value|1-100': 150, 'type|0-2': 1 }]
+  // }),
 };
 
 export default noProxy ? {} : delay(proxy, 1000);
