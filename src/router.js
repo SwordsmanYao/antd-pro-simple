@@ -4,7 +4,7 @@ import { LocaleProvider, Spin } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import dynamic from 'dva/dynamic';
 import cloneDeep from 'lodash/cloneDeep';
-import { getNavData } from './common/nav';
+import { getPathRouter } from './common/pathRouter';
 import { getPlainNode } from './utils/utils';
 
 import styles from './index.less';
@@ -13,39 +13,37 @@ dynamic.setDefaultLoadingComponent(() => {
   return <Spin size="large" className={styles.globalSpin} />;
 });
 
-function getRouteData(navData, path) {
-  if (!navData.some(item => item.layout === path) ||
-    !(navData.filter(item => item.layout === path)[0].children)) {
+function getRouteData(pathRouter, path) {
+  if (!pathRouter.some(item => item.layout === path) ||
+    !(pathRouter.filter(item => item.layout === path)[0].children)) {
     return null;
   }
-  const route = cloneDeep(navData.filter(item => item.layout === path)[0]);
+  const route = cloneDeep(pathRouter.filter(item => item.layout === path)[0]);
   const nodeList = getPlainNode(route.children);
   return nodeList;
 }
 
-function getLayout(navData, path) {
-  if (!navData.some(item => item.layout === path) ||
-    !(navData.filter(item => item.layout === path)[0].children)) {
+function getLayout(pathRouter, path) {
+  if (!pathRouter.some(item => item.layout === path) ||
+    !(pathRouter.filter(item => item.layout === path)[0].children)) {
     return null;
   }
-  const route = navData.filter(item => item.layout === path)[0];
+  const route = pathRouter.filter(item => item.layout === path)[0];
   return {
     component: route.component,
     layout: route.layout,
-    name: route.name,
     path: route.path,
   };
 }
 
 function RouterConfig({ history, app }) {
-  const navData = getNavData(app);
-  const BasicLayout = getLayout(navData, 'BasicLayout').component;
+  const pathRouter = getPathRouter(app);
+  const BasicLayout = getLayout(pathRouter, 'BasicLayout').component;
 
   const passProps = {
     app,
-    navData,
     getRouteData: (path) => {
-      return getRouteData(navData, path);
+      return getRouteData(pathRouter, path);
     },
   };
 
