@@ -1,0 +1,139 @@
+// nav data
+export const getNavData = app => [
+  {
+    component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
+    layout: 'BasicLayout',
+    path: '/',
+    children: [
+      {
+        path: 'dashboard',
+        children: [
+          {
+            path: 'analysis',
+            component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
+          },
+          {
+            path: 'monitor',
+            component: dynamicWrapper(app, ['monitor'], () => import('../routes/Dashboard/Monitor')),
+          },
+          {
+            path: 'workplace',
+            component: dynamicWrapper(app, ['project', 'activities', 'chart'], () => import('../routes/Dashboard/Workplace')),
+          },
+        ],
+      },
+      {
+        path: 'form',
+        children: [
+          {
+            path: 'basic-form',
+            component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/BasicForm')),
+          },
+          {
+            path: 'advanced-form',
+            component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/AdvancedForm')),
+          },
+        ],
+      },
+      {
+        path: 'list',
+        children: [
+          {
+            path: 'table-list',
+            component: dynamicWrapper(app, ['rule'], () => import('../routes/List/TableList')),
+          },
+          {
+            path: 'basic-list',
+            component: dynamicWrapper(app, ['list'], () => import('../routes/List/BasicList')),
+          },
+          {
+            path: 'card-list',
+            component: dynamicWrapper(app, ['list'], () => import('../routes/List/CardList')),
+          },
+        ],
+      },
+      {
+        path: 'profile',
+        children: [
+          {
+            path: 'basic',
+            component: dynamicWrapper(app, ['profile'], () => import('../routes/Profile/BasicProfile')),
+          },
+          {
+            path: 'advanced',
+            component: dynamicWrapper(app, ['profile'], () => import('../routes/Profile/AdvancedProfile')),
+          },
+        ],
+      },
+      {
+        path: 'result',
+        children: [
+          {
+            path: 'success',
+            component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
+          },
+          {
+            path: 'fail',
+            component: dynamicWrapper(app, [], () => import('../routes/Result/Error')),
+          },
+        ],
+      },
+      {
+        path: 'exception',
+        children: [
+          {
+            path: '403',
+            component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
+          },
+          {
+            path: '404',
+            component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
+          },
+          {
+            path: '500',
+            component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
+    path: '/user',
+    layout: 'UserLayout',
+    children: [
+      {
+        name: '帐户',
+        icon: 'user',
+        path: 'user',
+        children: [
+          {
+            name: '登录',
+            path: 'login',
+            component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
+          },
+          {
+            name: '注册',
+            path: 'register',
+            component: dynamicWrapper(app, ['register'], () => import('../routes/User/Register')),
+          },
+          {
+            name: '注册结果',
+            path: 'register-result',
+            component: dynamicWrapper(app, [], () => import('../routes/User/RegisterResult')),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    component: dynamicWrapper(app, [], () => import('../layouts/BlankLayout')),
+    layout: 'BlankLayout',
+    children: {
+      name: '使用文档',
+      path: 'http://pro.ant.design/docs/getting-started',
+      target: '_blank',
+      icon: 'book',
+    },
+  },
+];

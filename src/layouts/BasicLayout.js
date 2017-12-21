@@ -134,6 +134,17 @@ class BasicLayout extends React.PureComponent {
           icon: 'dashboard',
           path: 'table-list',
         },
+        {
+          name: '系统管理',
+          icon: 'dashboard',
+          path: 'system-management',
+          children: [
+            {
+              name: '菜单管理',
+              path: 'menu',
+            },
+          ],
+        },
       ],
     };
     const {

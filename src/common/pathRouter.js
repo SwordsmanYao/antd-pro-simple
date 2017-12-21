@@ -17,6 +17,15 @@ export const getPathRouter = app => [
         path: 'table-list',
         component: dynamicWrapper(app, ['rule'], () => import('../routes/List/TableList')),
       },
+      {
+        path: 'system-management',
+        children: [
+          {
+            path: 'menu',
+            component: dynamicWrapper(app, [], () => import('../routes/SystemManagement/Menu')),
+          },
+        ],
+      },
     ],
   },
 ];
