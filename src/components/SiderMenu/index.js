@@ -11,7 +11,7 @@ export default class SiderMenu extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.menus = props.navData.children;
+    this.menus = props.navData;
     this.state = {
       openKeys: this.getDefaultCollapsedSubMenus(props),
     };

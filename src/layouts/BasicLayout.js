@@ -42,9 +42,9 @@ const query = {
 
 class BasicLayout extends React.PureComponent {
   componentDidMount() {
-    // this.props.dispatch({
-    //   type: 'global/fetchMenu',
-    // });
+    this.props.dispatch({
+      type: 'global/fetchMenu',
+    });
     this.props.dispatch({
       type: 'user/fetchCurrent',
     });
@@ -128,30 +128,26 @@ class BasicLayout extends React.PureComponent {
   }
   render() {
     // 这个是由接口返回
-    const navData = {
-      name: '后台管理',
-      path: '/',
-      children: [
-        {
-          name: 'Dashboard',
-          icon: 'dashboard',
-          path: 'table-list',
-        },
-        {
-          name: '系统管理',
-          icon: 'dashboard',
-          path: 'system-management',
-          children: [
-            {
-              name: '菜单管理',
-              path: 'menu',
-            },
-          ],
-        },
-      ],
-    };
+    // const navData = [
+    //   {
+    //     name: 'Dashboard',
+    //     icon: 'dashboard',
+    //     path: 'table-list',
+    //   },
+    //   {
+    //     name: '系统管理',
+    //     icon: 'dashboard',
+    //     path: 'system-management',
+    //     children: [
+    //       {
+    //         name: '菜单管理',
+    //         path: 'menu',
+    //       },
+    //     ],
+    //   },
+    // ];
     const {
-      currentUser, collapsed, fetchingNotices, getRouteData, location, dispatch,
+      currentUser, collapsed, fetchingNotices, getRouteData, location, dispatch, navData,
     } = this.props;
 
     const menu = (
@@ -287,4 +283,5 @@ export default connect(state => ({
   collapsed: state.global.collapsed,
   fetchingNotices: state.global.fetchingNotices,
   notices: state.global.notices,
+  navData: state.global.menu,
 }))(BasicLayout);

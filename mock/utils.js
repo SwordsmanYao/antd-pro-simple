@@ -39,6 +39,7 @@ export function getUrlParams(url) {
   return obj;
 }
 
+// 根据后端要求调整相应数据格式
 export const convertResponseData = data => ({
   Code: 200,
   Status: true,

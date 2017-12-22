@@ -53,6 +53,24 @@ const proxy = {
     $body: postRule,
   }),
   'GET /api/notices': getNotices,
+  '/SysManagement/Menu/treejson': convertResponseData([
+    {
+      name: 'Dashboard',
+      icon: 'dashboard',
+      path: 'table-list',
+    },
+    {
+      name: '系统管理',
+      icon: 'dashboard',
+      path: 'system-management',
+      children: [
+        {
+          name: '菜单管理',
+          path: 'menu',
+        },
+      ],
+    },
+  ],),
   // mockjs 使用
   // 'GET /api/tags': mockjs.mock({
   //   'list|100': [{ name: '@city', 'value|1-100': 150, 'type|0-2': 1 }]
