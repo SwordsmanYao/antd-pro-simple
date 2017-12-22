@@ -39,7 +39,16 @@ export function getUrlParams(url) {
   return obj;
 }
 
+export const convertResponseData = data => ({
+  Code: 200,
+  Status: true,
+  Data: data,
+  Error: null,
+  TotalCount: null,
+});
+
 export default {
   getUrlParams,
   imgMap,
+  convertResponseData,
 };

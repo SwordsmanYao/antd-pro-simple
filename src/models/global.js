@@ -1,4 +1,4 @@
-import { queryNotices } from '../services/api';
+import { queryNotices, queryMenu } from '../services/api';
 
 export default {
   namespace: 'global',
@@ -7,6 +7,7 @@ export default {
     collapsed: false,
     notices: [],
     fetchingNotices: false,
+    menu: {},
   },
 
   effects: {
@@ -31,6 +32,14 @@ export default {
       yield put({
         type: 'saveClearedNotices',
         payload,
+      });
+    },
+    *fetchMenu(_, { call, put }) {
+      const data = yield call(queryMenu);
+      console.log(data);
+      yield put({
+        type: 'saveMenu',
+        payload: data,
       });
     },
   },
@@ -59,6 +68,12 @@ export default {
       return {
         ...state,
         fetchingNotices: payload,
+      };
+    },
+    saveMenu(state, { payload }) {
+      return {
+        ...state,
+        menu: payload,
       };
     },
   },

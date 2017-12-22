@@ -1,4 +1,4 @@
-import { getUrlParams } from './utils';
+import { getUrlParams, convertResponseData } from './utils';
 
 // mock tableListDataSource
 let tableListDataSource = [];
@@ -66,9 +66,9 @@ export function getRule(req, res, u) {
   };
 
   if (res && res.json) {
-    res.json(result);
+    res.json(convertResponseData(result));
   } else {
-    return result;
+    return convertResponseData(result);
   }
 }
 
@@ -115,9 +115,9 @@ export function postRule(req, res, u, b) {
   };
 
   if (res && res.json) {
-    res.json(result);
+    res.json(convertResponseData(result));
   } else {
-    return result;
+    return (result);
   }
 }
 

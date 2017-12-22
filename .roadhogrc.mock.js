@@ -1,6 +1,6 @@
 import mockjs from 'mockjs';
 import { getRule, postRule } from './mock/rule';
-import { imgMap } from './mock/utils';
+import { imgMap,convertResponseData } from './mock/utils';
 import { getNotices } from './mock/notices';
 import { delay } from 'roadhog-api-doc';
 
@@ -10,7 +10,7 @@ const noProxy = process.env.NO_PROXY === 'true';
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 const proxy = {
   // 支持值为 Object 和 Array
-  'GET /api/currentUser': {
+  'GET /api/currentUser': convertResponseData({
     $desc: "获取当前用户接口",
     $params: {
       pageSize: {
@@ -24,9 +24,9 @@ const proxy = {
       userid: '00000001',
       notifyCount: 12,
     },
-  },
+  }),
   // GET POST 可省略
-  'GET /api/users': [{
+  'GET /api/users': convertResponseData([{
     key: '1',
     name: 'John Brown',
     age: 32,
@@ -41,9 +41,9 @@ const proxy = {
     name: 'Joe Black',
     age: 32,
     address: 'Sidney No. 1 Lake Park',
-  }],
+  }]),
   'GET /api/rule': getRule,
-  'POST /api/rule': {
+  'POST /api/rule': convertResponseData({
     $params: {
       pageSize: {
         desc: '分页',
@@ -51,7 +51,7 @@ const proxy = {
       },
     },
     $body: postRule,
-  },
+  }),
   'GET /api/notices': getNotices,
   // mockjs 使用
   // 'GET /api/tags': mockjs.mock({

@@ -42,6 +42,9 @@ const query = {
 
 class BasicLayout extends React.PureComponent {
   componentDidMount() {
+    // this.props.dispatch({
+    //   type: 'global/fetchMenu',
+    // });
     this.props.dispatch({
       type: 'user/fetchCurrent',
     });

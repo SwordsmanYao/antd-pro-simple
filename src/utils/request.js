@@ -26,8 +26,25 @@ function fetch(options) {
 export default function request(options) {
   return fetch(options)
     .then((response) => {
-      if (response.status === 200) {
-        return response.data;
+      if (response.status >= 200 && response.status <= 300) {
+        const { data } = response;
+        if (data.Code === 200 && data.Status) {
+          return data.Data;
+        } else if (data.Code === 101) { // 数据校验失败
+          // 展示 data.Error.ModelState 里面的校验数据
+          // data.Error.ModelState[0].key 字段 data.Error.ModelState[0].value 错误描述
+          // notification.error({
+          //   message: `Code: ${data.Code}, ${response.url}`,
+          //   description: data.statusText,
+          // });
+          return null;
+        } else {
+          notification.error({
+            message: `Code: ${data.Code}`,
+            description: data.Error.Message,
+          });
+          return null;
+        }
       } else if (options && options.method && options.method.toUpperCase() !== 'GET') {
         notification.error({
           message: `请求错误 ${response.status}: ${response.url}`,

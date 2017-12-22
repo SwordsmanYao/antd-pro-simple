@@ -1,6 +1,8 @@
+import { convertResponseData } from './utils';
+
 export default {
   getNotices(req, res) {
-    res.json([{
+    res.json(convertResponseData([{
       id: '000000001',
       avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ThXAXghbEsBCCSDihZxY.png',
       title: '你收到了 14 份新周报',
@@ -80,6 +82,6 @@ export default {
       extra: '进行中',
       status: 'processing',
       type: '待办',
-    }]);
+    }]));
   },
 };
