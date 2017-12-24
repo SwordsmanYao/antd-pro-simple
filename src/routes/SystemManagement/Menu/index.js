@@ -11,41 +11,16 @@ const { Sider, Content } = Layout;
 
 
 @connect(state => ({
-  currentNode: state.menu.currentNode,
   selectedKeys: state.menu.selectedKeys,
   treeList: state.menu.treeList,
 }))
-@Form.create({
-  onFieldsChange(props, changedFields) {
-    console.log('onFieldsChange', changedFields);
-    props.dispatch({
-      type: 'menu/saveNode',
-      payload: changedFields,
-    });
-  },
-  mapPropsToFields(props) {
-    console.log('mapPropsToFields', props.currentNode);
-    return {
-      name: Form.createFormField({
-        value: props.currentNode.name,
-      }),
-      path: Form.createFormField({
-        value: props.currentNode.path,
-      }),
-      icon: Form.createFormField({
-        value: props.currentNode.icon,
-      }),
-    };
-  },
-  onValuesChange(_, values) {
-    console.log(values);
-  },
-})
+@Form.create()
 export default class Menu extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       modalVisible: false, // 新建的模态框是否显示
+      id: null, // 当前编辑对象的 id，为 null 代表新建
     };
   }
 
@@ -56,6 +31,7 @@ export default class Menu extends PureComponent {
     });
   }
 
+  // 点击树节点时触发
   onSelect = (selectedKeys) => {
     console.log('selected', selectedKeys);
     const { dispatch } = this.props;
@@ -66,20 +42,51 @@ export default class Menu extends PureComponent {
     });
   }
 
+  // 设置模态框显示/隐藏
   setModalVisible(modalVisible) {
     this.setState({ modalVisible });
   }
 
+  // 新建
+  handleNew = () => {
+    this.setModalVisible(true);
+    this.setState({
+      id: null,
+    });
+    this.props.form.setFieldsValue({
+      name: '',
+      path: '',
+      icon: '',
+    });
+  }
+  // 修改
+  handleEdit = () => {
+    this.setModalVisible(true);
+    // fetch detail then
+    this.setState({
+      id: 23423,
+    });
+    this.props.form.setFieldsValue({
+      name: 'qq',
+      path: 'test',
+      icon: 'ee',
+    });
+  }
+
+  // 表单提交
   handleSubmit = (e) => {
-    const { form, dispatch } = this.props;
+    const { form } = this.props;
     e.preventDefault();
-    form.validateFieldsAndScroll((err) => {
+    form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        dispatch({
-          type: 'menu/commitMenu',
-        }).then((s) => {
-          console.log('s', s);
-        });
+        // dispatch({
+        //   type: 'menu/commitMenu',
+        // }).then((s) => {
+        //   console.log('s', s);
+        // });
+        const data = this.state.id ? values : { id: this.state.id, ...values };
+        console.log('Received values of form: ', data);
+        this.setModalVisible(false);
       }
     });
   }
@@ -99,43 +106,30 @@ export default class Menu extends PureComponent {
       },
     };
 
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 24,
-          offset: 0,
-        },
-        sm: {
-          span: 16,
-          offset: 8,
-        },
-      },
-    };
-
     const dataSource = [{
       key: '1',
-      name: '胡彦斌',
-      age: 32,
-      address: '西湖区湖底公园1号',
+      name: '测试',
+      path: 'test',
+      icon: 'ttest',
     }, {
       key: '2',
-      name: '胡彦祖',
-      age: 42,
-      address: '西湖区湖底公园1号',
+      name: '测试',
+      path: 'test',
+      icon: 'ttest',
     }];
 
     const columns = [{
-      title: '姓名',
+      title: '名称',
       dataIndex: 'name',
       key: 'name',
     }, {
-      title: '年龄',
-      dataIndex: 'age',
-      key: 'age',
+      title: '路径',
+      dataIndex: 'path',
+      key: 'path',
     }, {
-      title: '住址',
-      dataIndex: 'address',
-      key: 'address',
+      title: '图标',
+      dataIndex: 'icon',
+      key: 'icon',
     }];
 
     return (
@@ -157,15 +151,14 @@ export default class Menu extends PureComponent {
         </Sider>
         <Content style={{ background: '#fff', marginLeft: 10, padding: 30 }}>
           <div className={styles.toolbar}>
-            <Button onClick={() => this.setModalVisible(true)}>新建</Button>
+            <Button onClick={this.handleNew}>新建</Button>
             <Modal
-              title="Vertically centered modal dialog"
-              wrapClassName="vertical-center-modal"
+              title="菜单"
               visible={this.state.modalVisible}
-              onOk={() => this.setModalVisible(false)}
+              onOk={this.handleSubmit}
               onCancel={() => this.setModalVisible(false)}
             >
-              <Form onSubmit={this.handleSubmit}>
+              <Form>
                 <FormItem
                   {...formItemLayout}
                   label="名称"
@@ -198,14 +191,16 @@ export default class Menu extends PureComponent {
                     <Input />,
                   )}
                 </FormItem>
-                <FormItem {...tailFormItemLayout}>
-                  <Button type="primary" htmlType="submit">提交</Button>
-                </FormItem>
               </Form>
             </Modal>
           </div>
-          <Table dataSource={dataSource} columns={columns} />
-
+          <Table
+            bordered
+            loading={false}
+            pagination={{ current: 6, pageSize: 5, total: 50 }}
+            dataSource={dataSource}
+            columns={columns}
+          />
         </Content>
       </Layout>
     );

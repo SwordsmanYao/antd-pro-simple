@@ -6,7 +6,7 @@ export default {
   state: {
     treeList: [],
     selectedKeys: ['-1'],
-    currentNode: { name: 'ewerwe', path: 'asdfasd', icon: 'dasfasf' },
+    currentNode: {},
   },
 
   effects: {
