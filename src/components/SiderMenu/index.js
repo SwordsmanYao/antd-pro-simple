@@ -32,10 +32,12 @@ export default class SiderMenu extends PureComponent {
     return currentMenuSelectedKeys;
   }
   getCurrentMenuSelectedKeys(props) {
+    console.log(props);
     const { location: { pathname } } = props || this.props;
     const keys = pathname.split('/').slice(1);
+    console.log(keys);
     if (keys.length === 1 && keys[0] === '') {
-      return [this.menus[0].key];
+      return [this.menus[0].path];
     }
     return keys;
   }

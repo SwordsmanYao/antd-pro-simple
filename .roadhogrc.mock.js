@@ -55,19 +55,27 @@ const proxy = {
   'GET /api/notices': getNotices,
   '/SysManagement/Menu/treejson': convertResponseData([
     {
+      id: 234234,
       name: 'Dashboard',
       icon: 'dashboard',
       path: 'table-list',
     },
     {
+      id: 245345,
       name: '系统管理',
       icon: 'dashboard',
       path: 'system-management',
       children: [
         {
+          id: 131245,
           name: '菜单管理',
           path: 'menu',
         },
+        {
+          id: 25345,
+          name: 'Form',
+          path: 'menuForm',
+        }
       ],
     },
   ],),

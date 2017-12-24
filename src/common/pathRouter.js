@@ -22,7 +22,11 @@ export const getPathRouter = app => [
         children: [
           {
             path: 'menu',
-            component: dynamicWrapper(app, [], () => import('../routes/SystemManagement/Menu')),
+            component: dynamicWrapper(app, ['menu'], () => import('../routes/SystemManagement/Menu')),
+          },
+          {
+            path: 'menuForm',
+            component: dynamicWrapper(app, ['menu'], () => import('../routes/SystemManagement/Menu/form')),
           },
         ],
       },

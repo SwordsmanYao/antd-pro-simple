@@ -7,7 +7,7 @@ export default {
     collapsed: false,
     notices: [],
     fetchingNotices: false,
-    menu: {},
+    menu: [],
   },
 
   effects: {

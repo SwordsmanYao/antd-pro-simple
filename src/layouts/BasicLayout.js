@@ -162,12 +162,16 @@ class BasicLayout extends React.PureComponent {
 
     const layout = (
       <Layout>
-        <SiderMenu
-          collapsed={collapsed}
-          navData={navData}
-          location={location}
-          dispatch={dispatch}
-        />
+        {
+          navData && navData.length > 0 &&
+          <SiderMenu
+            collapsed={collapsed}
+            navData={navData}
+            location={location}
+            dispatch={dispatch}
+          />
+        }
+
         <Layout>
           <Header className={styles.header}>
             <Icon
