@@ -19,7 +19,6 @@ export default (props) => {
 
   return (
     <Tree
-      showLine
       {...props}
     >
       {

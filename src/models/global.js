@@ -17,10 +17,12 @@ export default {
         payload: true,
       });
       const data = yield call(queryNotices);
-      yield put({
-        type: 'saveNotices',
-        payload: data,
-      });
+      if (data.Status) {
+        yield put({
+          type: 'saveNotices',
+          payload: data.Data,
+        });
+      }
     },
     *clearNotices({ payload }, { put, select }) {
       const count = yield select(state => state.global.notices.length);
@@ -36,11 +38,13 @@ export default {
     },
     *fetchMenu(_, { call, put }) {
       const data = yield call(queryMenu);
-      console.log(data);
-      yield put({
-        type: 'saveMenu',
-        payload: data,
-      });
+      console.log('fetchMenu', data);
+      if (data.Status) {
+        yield put({
+          type: 'saveMenu',
+          payload: data.Data,
+        });
+      }
     },
   },
 

@@ -6,3 +6,10 @@ export async function queryMenu() {
     url: `${api}/SysManagement/Menu/treejson`,
   });
 }
+
+export async function queryMenuList(params) {
+  return request({
+    url: `${api}/SysManagement/Menu/list`,
+    data: params,
+  });
+}

@@ -78,6 +78,32 @@ const proxy = {
         }
       ],
     },
+  ]),
+  '/SysManagement/Menu/list': convertResponseData([
+    {
+      id: 234234,
+      name: 'Dashboard',
+      icon: 'dashboard',
+      path: 'table-list',
+    },
+    {
+      id: 143345,
+      name: '系统管理',
+      icon: 'dashboard',
+      path: 'system-management',
+    },
+    {
+      id: 23445,
+      name: '系统管理',
+      icon: 'dashboard',
+      path: 'system-management',
+    },
+    {
+      id: 24356,
+      name: '系统管理',
+      icon: 'dashboard',
+      path: 'system-management',
+    },
   ],),
   // mockjs 使用
   // 'GET /api/tags': mockjs.mock({

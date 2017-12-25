@@ -18,10 +18,13 @@ export default {
         payload: true,
       });
       const response = yield call(queryRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      console.log('response', response);
+      if (response.Status) {
+        yield put({
+          type: 'save',
+          payload: response.Data,
+        });
+      }
       yield put({
         type: 'changeLoading',
         payload: false,
@@ -33,10 +36,12 @@ export default {
         payload: true,
       });
       const response = yield call(addRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      if (response) {
+        yield put({
+          type: 'save',
+          payload: response.Data,
+        });
+      }
       yield put({
         type: 'changeLoading',
         payload: false,
@@ -50,10 +55,12 @@ export default {
         payload: true,
       });
       const response = yield call(removeRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      if (response.Status) {
+        yield put({
+          type: 'save',
+          payload: response.Data,
+        });
+      }
       yield put({
         type: 'changeLoading',
         payload: false,
