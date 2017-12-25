@@ -6,19 +6,27 @@ export default {
   state: {
     treeList: [],
     selectedKeys: ['-1'],
-    currentNode: {},
+    currentNode: {
+      // 设置初始值
+      // name: {
+      //   value: '',
+      // },
+      // path: {
+      //   value: '',
+      // },
+      // icon: {
+      //   value: '',
+      // },
+    },
   },
 
   effects: {
     // 页面的改变保存到 model 的 state 中
     *saveNode({ payload }, { put }) {
-      const node = {};
-      Object.keys(payload).forEach((v) => {
-        node[v] = payload[v].value;
-      });
+      // console.log('test', payload);
       yield put({
         type: 'saveCurrentNode',
-        payload: node,
+        payload,
       });
     },
     *fetchTree(_, { call, put }) {
@@ -38,6 +46,12 @@ export default {
           ...state.currentNode,
           ...action.payload,
         },
+      };
+    },
+    clearCurrentNode(state) {
+      return {
+        ...state,
+        currentNode: {},
       };
     },
     saveSelectedKeys(state, action) {

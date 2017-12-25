@@ -13,14 +13,39 @@ const { Sider, Content } = Layout;
 @connect(state => ({
   selectedKeys: state.menu.selectedKeys,
   treeList: state.menu.treeList,
+  currentNode: state.menu.currentNode,
 }))
-@Form.create()
+@Form.create({
+  onFieldsChange(props, changedFields) {
+    console.log('onFieldsChange', changedFields);
+    props.dispatch({
+      type: 'menu/saveNode',
+      payload: changedFields,
+    });
+  },
+  mapPropsToFields(props) {
+    console.log('mapPropsToFields', props.currentNode);
+    return {
+      name: Form.createFormField({
+        ...props.currentNode.name,
+      }),
+      path: Form.createFormField({
+        ...props.currentNode.path,
+      }),
+      icon: Form.createFormField({
+        ...props.currentNode.icon,
+      }),
+    };
+  },
+  onValuesChange(_, values) {
+    console.log(values);
+  },
+})
 export default class Menu extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       modalVisible: false, // 新建的模态框是否显示
-      id: null, // 当前编辑对象的 id，为 null 代表新建
     };
   }
 
@@ -50,42 +75,28 @@ export default class Menu extends PureComponent {
   // 新建
   handleNew = () => {
     this.setModalVisible(true);
-    this.setState({
-      id: null,
-    });
-    this.props.form.setFieldsValue({
-      name: '',
-      path: '',
-      icon: '',
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'menu/clearCurrentNode',
     });
   }
   // 修改
   handleEdit = () => {
     this.setModalVisible(true);
-    // fetch detail then
-    this.setState({
-      id: 23423,
-    });
-    this.props.form.setFieldsValue({
-      name: 'qq',
-      path: 'test',
-      icon: 'ee',
-    });
+    // fetch detail
   }
 
   // 表单提交
   handleSubmit = (e) => {
     const { form } = this.props;
     e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
+    form.validateFieldsAndScroll((err) => {
       if (!err) {
         // dispatch({
         //   type: 'menu/commitMenu',
         // }).then((s) => {
         //   console.log('s', s);
         // });
-        const data = this.state.id ? values : { id: this.state.id, ...values };
-        console.log('Received values of form: ', data);
         this.setModalVisible(false);
       }
     });

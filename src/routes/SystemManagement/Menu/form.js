@@ -19,13 +19,13 @@ const FormItem = Form.Item;
     console.log('mapPropsToFields', props.currentNode);
     return {
       name: Form.createFormField({
-        value: props.currentNode.name,
+        ...props.currentNode.name,
       }),
       path: Form.createFormField({
-        value: props.currentNode.path,
+        ...props.currentNode.path,
       }),
       icon: Form.createFormField({
-        value: props.currentNode.icon,
+        ...props.currentNode.icon,
       }),
     };
   },
