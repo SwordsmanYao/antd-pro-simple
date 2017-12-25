@@ -16,10 +16,12 @@ export default {
         payload: true,
       });
       const response = yield call(queryUsers);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      if (response.Status) {
+        yield put({
+          type: 'save',
+          payload: response.Data,
+        });
+      }
       yield put({
         type: 'changeLoading',
         payload: false,
@@ -27,10 +29,12 @@ export default {
     },
     *fetchCurrent(_, { call, put }) {
       const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+      if (response.Status) {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response.Data,
+        });
+      }
     },
   },
 
