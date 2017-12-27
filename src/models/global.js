@@ -1,45 +1,18 @@
-import { queryNotices, queryMenu } from '../services/api';
+import { queryMenu } from '../services/api';
 
 export default {
   namespace: 'global',
 
   state: {
     collapsed: false,
-    notices: [],
-    fetchingNotices: false,
     menu: [],
   },
 
   effects: {
-    *fetchNotices(_, { call, put }) {
-      yield put({
-        type: 'changeNoticeLoading',
-        payload: true,
-      });
-      const data = yield call(queryNotices);
-      if (data.Status) {
-        yield put({
-          type: 'saveNotices',
-          payload: data.Data,
-        });
-      }
-    },
-    *clearNotices({ payload }, { put, select }) {
-      const count = yield select(state => state.global.notices.length);
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: count,
-      });
-
-      yield put({
-        type: 'saveClearedNotices',
-        payload,
-      });
-    },
     *fetchMenu(_, { call, put }) {
       const data = yield call(queryMenu);
       console.log('fetchMenu', data);
-      if (data.Status) {
+      if (data.Code === 200) {
         yield put({
           type: 'saveMenu',
           payload: data.Data,
@@ -53,25 +26,6 @@ export default {
       return {
         ...state,
         collapsed: payload,
-      };
-    },
-    saveNotices(state, { payload }) {
-      return {
-        ...state,
-        notices: payload,
-        fetchingNotices: false,
-      };
-    },
-    saveClearedNotices(state, { payload }) {
-      return {
-        ...state,
-        notices: state.notices.filter(item => item.type !== payload),
-      };
-    },
-    changeNoticeLoading(state, { payload }) {
-      return {
-        ...state,
-        fetchingNotices: payload,
       };
     },
     saveMenu(state, { payload }) {

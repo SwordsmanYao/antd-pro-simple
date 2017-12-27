@@ -25,15 +25,9 @@ export async function addRule(params) {
   });
 }
 
-export async function queryNotices() {
-  return request({
-    url: `${api}/api/notices`,
-  });
-}
-
 // 查询左侧菜单数据
 export async function queryMenu() {
   return request({
-    url: `${api}/SysManagement/Menu/treejson`,
+    url: `${api}/SysManagement/Menu/tree`,
   });
 }

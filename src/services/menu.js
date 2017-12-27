@@ -3,7 +3,7 @@ import { api } from '../utils/config';
 
 export async function queryMenu() {
   return request({
-    url: `${api}/SysManagement/Menu/treejson`,
+    url: `${api}/SysManagement/Menu/tree`,
   });
 }
 

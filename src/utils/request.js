@@ -36,7 +36,7 @@ export default function request(options) {
           //   message: `Code: ${data.Code}, ${response.url}`,
           //   description: data.statusText,
           // });
-        } else if (data.Code !== 200 || !data.Status) {
+        } else if (data.Code !== 200) {
           notification.error({
             message: `Code: ${data.Code}`,
             description: data.Error.Message,

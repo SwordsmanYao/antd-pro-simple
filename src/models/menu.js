@@ -36,7 +36,7 @@ export default {
     *fetchTree(_, { call, put }) {
       const response = yield call(queryMenu);
       console.log('fetchTree', response);
-      if (response.Status) {
+      if (response.Code === 200) {
         yield put({
           type: 'saveTreeList',
           payload: response.Data,
@@ -54,7 +54,7 @@ export default {
         ...payload,
         id: selectedKeys,
       });
-      if (response.Status) {
+      if (response.Code === 200) {
         yield put({
           type: 'saveMenuList',
           payload: response.Data,

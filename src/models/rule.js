@@ -19,7 +19,7 @@ export default {
       });
       const response = yield call(queryRule, payload);
       console.log('response', response);
-      if (response.Status) {
+      if (response.Code === 200) {
         yield put({
           type: 'save',
           payload: response.Data,
@@ -55,7 +55,7 @@ export default {
         payload: true,
       });
       const response = yield call(removeRule, payload);
-      if (response.Status) {
+      if (response.Code === 200) {
         yield put({
           type: 'save',
           payload: response.Data,
