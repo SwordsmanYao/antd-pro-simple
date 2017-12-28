@@ -32,5 +32,21 @@ export const getPathRouter = app => [
       },
     ],
   },
+  {
+    component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
+    layout: 'UserLayout',
+    path: '/user',
+    children: [
+      {
+        path: 'user',
+        children: [
+          {
+            path: 'login',
+            component: dynamicWrapper(app, ['user'], () => import('../routes/User/Login')),
+          },
+        ],
+      },
+    ],
+  },
 ];
 

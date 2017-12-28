@@ -3,7 +3,7 @@ import DocumentTitle from 'react-document-title';
 
 import { connect } from 'dva';
 import { Route, Redirect, Switch } from 'dva/router';
-import { Layout, Menu, Icon, Avatar, Dropdown, message, Spin } from 'antd';
+import { Layout, Menu, Icon, Avatar, Dropdown, Spin } from 'antd';
 
 import GlobalFooter from 'ant-design-pro/lib/GlobalFooter';
 
@@ -39,10 +39,10 @@ const query = {
 class BasicLayout extends React.PureComponent {
   componentDidMount() {
     this.props.dispatch({
-      type: 'global/fetchMenu',
+      type: 'user/fetchCurrent',
     });
     this.props.dispatch({
-      type: 'user/fetchCurrent',
+      type: 'global/fetchMenu',
     });
   }
   componentWillUnmount() {
@@ -52,7 +52,7 @@ class BasicLayout extends React.PureComponent {
   onMenuClick = ({ key }) => {
     if (key === 'logout') {
       this.props.dispatch({
-        type: 'login/logout',
+        type: 'user/logout',
       });
     }
   }
@@ -81,40 +81,8 @@ class BasicLayout extends React.PureComponent {
       window.dispatchEvent(event);
     }, 600);
   }
-  handleNoticeClear = (type) => {
-    message.success(`清空了${type}`);
-    this.props.dispatch({
-      type: 'global/clearNotices',
-      payload: type,
-    });
-  }
-  handleNoticeVisibleChange = (visible) => {
-    if (visible) {
-      this.props.dispatch({
-        type: 'global/fetchNotices',
-      });
-    }
-  }
+
   render() {
-    // 这个是由接口返回
-    // const navData = [
-    //   {
-    //     name: 'Dashboard',
-    //     icon: 'dashboard',
-    //     path: 'table-list',
-    //   },
-    //   {
-    //     name: '系统管理',
-    //     icon: 'dashboard',
-    //     path: 'system-management',
-    //     children: [
-    //       {
-    //         name: '菜单管理',
-    //         path: 'menu',
-    //       },
-    //     ],
-    //   },
-    // ];
     const {
       currentUser, collapsed, getRouteData, location, dispatch, navData,
     } = this.props;
@@ -148,11 +116,11 @@ class BasicLayout extends React.PureComponent {
               onClick={this.toggle}
             />
             <div className={styles.right}>
-              {currentUser.name ? (
+              {currentUser && currentUser.UserName ? (
                 <Dropdown overlay={menu}>
                   <span className={`${styles.action} ${styles.account}`}>
-                    <Avatar size="small" className={styles.avatar} src={currentUser.avatar} />
-                    {currentUser.name}
+                    <Avatar size="small" className={styles.avatar} src={currentUser.Logo} />
+                    {currentUser.UserName}
                   </span>
                 </Dropdown>
               ) : <Spin size="small" style={{ marginLeft: 8 }} />}
@@ -175,19 +143,6 @@ class BasicLayout extends React.PureComponent {
               <Redirect exact from="/" to="/table-list" />
             </Switch>
             <GlobalFooter
-              // links={[{
-              //   title: 'Pro 首页',
-              //   href: 'http://pro.ant.design',
-              //   blankTarget: true,
-              // }, {
-              //   title: 'GitHub',
-              //   href: 'https://github.com/ant-design/ant-design-pro',
-              //   blankTarget: true,
-              // }, {
-              //   title: 'Ant Design',
-              //   href: 'http://ant.design',
-              //   blankTarget: true,
-              // }]}
               copyright={
                 <div>
                   Copyright <Icon type="copyright" /> 2017 蚂蚁金服体验技术部出品

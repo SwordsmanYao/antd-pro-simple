@@ -38,6 +38,7 @@ function getLayout(pathRouter, path) {
 
 function RouterConfig({ history, app }) {
   const pathRouter = getPathRouter(app);
+  const UserLayout = getLayout(pathRouter, 'UserLayout').component;
   const BasicLayout = getLayout(pathRouter, 'BasicLayout').component;
 
   const passProps = {
@@ -51,6 +52,7 @@ function RouterConfig({ history, app }) {
     <LocaleProvider locale={zhCN}>
       <Router history={history}>
         <Switch>
+          <Route path="/user" render={props => <UserLayout {...props} {...passProps} />} />
           <Route path="/" render={props => <BasicLayout {...props} {...passProps} />} />
         </Switch>
       </Router>

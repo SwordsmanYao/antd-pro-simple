@@ -1,8 +1,11 @@
 import request from '../utils/request';
 import { api } from '../utils/config';
 
-export async function queryCurrent() {
+// 登录
+export async function login(params) {
   return request({
-    url: `${api}/api/currentUser`,
+    url: `${api}/Login/SignIn`,
+    method: 'POST',
+    data: params,
   });
 }

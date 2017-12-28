@@ -1,7 +1,31 @@
 import axios from 'axios';
 import { notification } from 'antd';
 
-axios.defaults.headers.common.Authorization = 'mytoken';
+// timestamp 时间戳
+// token
+// #AAA 常量
+// axios.defaults.headers.common.Authorization =
+// 'Basic timestamp=13123123123,token=tiket,sign=md5(timestamp+#AAA)';
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    // 判断是否存在token，如果存在的话，则每个http header都加上token
+    if (token) {
+      return {
+        ...config,
+        headers: {
+          ...config.headers,
+          Authorization: `Basic timestamp=13123123123,token=${token},sign=md5(timestamp+#AAA)`,
+        },
+      };
+    }
+    return config;
+  },
+  (err) => {
+    return Promise.reject(err);
+  }
+);
 
 function fetch(options) {
   const { url, data, method = 'GET' } = options;
