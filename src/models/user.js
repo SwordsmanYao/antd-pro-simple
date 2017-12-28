@@ -5,24 +5,11 @@ export default {
   namespace: 'user',
 
   state: {
-    loading: false,
     currentUser: null, // 当前登录用户的信息
     submitting: false, // 登录是否正在提交
   },
 
   effects: {
-    *fetchCurrent(_, { put }) {
-      // 这里要改为从localstorage里面查询,查询不到跳转登录页
-      const user = localStorage.getItem('currentUser');
-      if (user !== null) {
-        yield put({
-          type: 'saveCurrentUser',
-          payload: user,
-        });
-      }
-
-      // yield put(routerRedux.push('/user/login'));
-    },
     *login({ payload }, { call, put }) {
       yield put({
         type: 'changeSubmitting',
@@ -73,15 +60,21 @@ export default {
 
       yield put(routerRedux.push('/user/login'));
     },
+    *fetchCurrent(_, { put }) {
+      // 这里要改为从localstorage里面查询,查询不到跳转登录页
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      if (user !== null) {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: user,
+        });
+      } else {
+        yield put(routerRedux.push('/user/login'));
+      }
+    },
   },
 
   reducers: {
-    changeLoading(state, action) {
-      return {
-        ...state,
-        loading: action.payload,
-      };
-    },
     saveCurrentUser(state, action) {
       return {
         ...state,

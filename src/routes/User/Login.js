@@ -51,13 +51,13 @@ export default class Login extends Component {
           <FormItem>
             {getFieldDecorator('LoginName', {
               rules: [{
-                required: true, message: '请输入账户名',
+                required: true, message: '请输入用户名',
               }],
             })(
               <Input
                 size="large"
                 prefix={<Icon type="user" className={styles.prefixIcon} />}
-                placeholder="请输入账户名"
+                placeholder="请输入用户名"
               />
             )}
           </FormItem>

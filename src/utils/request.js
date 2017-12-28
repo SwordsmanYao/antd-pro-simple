@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { notification } from 'antd';
+import md5 from 'md5';
 
 // timestamp 时间戳
 // token
@@ -10,13 +11,21 @@ import { notification } from 'antd';
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
+
     // 判断是否存在token，如果存在的话，则每个http header都加上token
     if (token) {
+      // 加密常量
+      const secret = 'secret';
+      // 时间戳--当前毫秒数
+      const timestamp = (new Date()).getTime();
+      // 加密后签名
+      const sign = md5(timestamp + secret);
+
       return {
         ...config,
         headers: {
           ...config.headers,
-          Authorization: `Basic timestamp=13123123123,token=${token},sign=md5(timestamp+#AAA)`,
+          Authorization: `Basic timestamp=${timestamp},token=${token},sign=${sign}`,
         },
       };
     }

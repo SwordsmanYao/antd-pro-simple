@@ -140,7 +140,7 @@ class BasicLayout extends React.PureComponent {
                   )
                 )
               }
-              <Redirect exact from="/" to="/table-list" />
+              <Redirect exact from="/" to="/system-management/menu" />
             </Switch>
             <GlobalFooter
               copyright={
