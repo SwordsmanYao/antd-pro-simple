@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Form, Input, Button } from 'antd';
 
 const FormItem = Form.Item;
+const { TextArea } = Input;
 
 @connect(state => ({
   currentNode: state.menu.currentNode,
@@ -18,14 +19,17 @@ const FormItem = Form.Item;
   mapPropsToFields(props) {
     console.log('mapPropsToFields', props.currentNode);
     return {
-      name: Form.createFormField({
-        ...props.currentNode.name,
+      Name: Form.createFormField({
+        ...props.currentNode.Name,
       }),
-      path: Form.createFormField({
-        ...props.currentNode.path,
+      Path: Form.createFormField({
+        ...props.currentNode.Path,
       }),
-      icon: Form.createFormField({
-        ...props.currentNode.icon,
+      IconName: Form.createFormField({
+        ...props.currentNode.IconName,
+      }),
+      Description: Form.createFormField({
+        ...props.currentNode.Description,
       }),
     };
   },
@@ -78,36 +82,40 @@ export default class BasicForms extends PureComponent {
           {...formItemLayout}
           label="名称"
         >
-          {getFieldDecorator('name', {
+          {getFieldDecorator('Name', {
             rules: [{
               required: true, message: '请输入名称',
             }],
           })(
-            <Input />
+            <Input />,
           )}
         </FormItem>
         <FormItem
           {...formItemLayout}
           label="路径"
         >
-          {getFieldDecorator('path', {
+          {getFieldDecorator('Path', {
             rules: [{
               required: true, message: '请输入路径',
             }],
           })(
-            <Input />
+            <Input />,
           )}
         </FormItem>
         <FormItem
           {...formItemLayout}
           label="图标"
         >
-          {getFieldDecorator('icon', {
-            rules: [{
-              required: true, message: '请输入图标',
-            }],
-          })(
-            <Input />
+          {getFieldDecorator('IconName')(
+            <Input />,
+          )}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label="描述"
+        >
+          {getFieldDecorator('Description')(
+            <TextArea autosize />,
           )}
         </FormItem>
         <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>

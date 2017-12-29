@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { notification } from 'antd';
 import md5 from 'md5';
+import { routerRedux } from 'dva/router';
 
 // timestamp 时间戳
 // token
@@ -15,9 +16,9 @@ axios.interceptors.request.use(
     // 判断是否存在token，如果存在的话，则每个http header都加上token
     if (token) {
       // 加密常量
-      const secret = 'secret';
+      const secret = '#GMS';
       // 时间戳--当前毫秒数
-      const timestamp = (new Date()).getTime();
+      const timestamp = (new Date()).getTime().toString();
       // 加密后签名
       const sign = md5(timestamp + secret);
 
@@ -60,6 +61,9 @@ export default function request(options) {
   return fetch(options)
     .then((response) => {
       if (response.status >= 200 && response.status <= 300) {
+        // 下次请求使用新的 token
+        localStorage.setItem('token', response.headers.authorization);
+
         const { data } = response;
         if (data.Code === 101) { // 数据校验失败
           // 暂时放在这里处理，后面要放在校验信息显示上
@@ -69,6 +73,13 @@ export default function request(options) {
           //   message: `Code: ${data.Code}, ${response.url}`,
           //   description: data.statusText,
           // });
+        } else if (data.Code === 100 || data.Code === 104) {
+          // 清空 localstorage 的 user 信息和 token
+          localStorage.removeItem('currentUser');
+          localStorage.removeItem('token');
+
+          // 跳转登录页
+          routerRedux.push('/user/login');
         } else if (data.Code !== 200) {
           notification.error({
             message: `Code: ${data.Code}`,

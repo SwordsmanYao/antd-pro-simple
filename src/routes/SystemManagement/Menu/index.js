@@ -8,6 +8,7 @@ import styles from './index.less';
 const FormItem = Form.Item;
 
 const { Sider, Content } = Layout;
+const { TextArea } = Input;
 
 
 @connect(state => ({
@@ -26,14 +27,17 @@ const { Sider, Content } = Layout;
   mapPropsToFields(props) {
     console.log('mapPropsToFields', props.currentNode);
     return {
-      name: Form.createFormField({
-        ...props.currentNode.name,
+      Name: Form.createFormField({
+        ...props.currentNode.Name,
       }),
-      path: Form.createFormField({
-        ...props.currentNode.path,
+      Path: Form.createFormField({
+        ...props.currentNode.Path,
       }),
-      icon: Form.createFormField({
-        ...props.currentNode.icon,
+      IconName: Form.createFormField({
+        ...props.currentNode.IconName,
+      }),
+      Description: Form.createFormField({
+        ...props.currentNode.Description,
       }),
     };
   },
@@ -118,29 +122,35 @@ export default class Menu extends PureComponent {
     };
 
     const dataSource = [{
-      key: '1',
-      name: '测试',
-      path: 'test',
-      icon: 'ttest',
+      UniqueID: '1',
+      Name: '测试',
+      Path: 'test',
+      IconName: 'ttest',
+      Description: '234234234',
     }, {
-      key: '2',
-      name: '测试',
-      path: 'test',
-      icon: 'ttest',
+      UniqueID: '2',
+      Name: '测试',
+      Path: 'test',
+      IconName: 'ttest',
+      Description: '234234234',
     }];
 
     const columns = [{
       title: '名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'Name',
+      key: 'Name',
     }, {
       title: '路径',
-      dataIndex: 'path',
-      key: 'path',
+      dataIndex: 'Path',
+      key: 'Path',
     }, {
       title: '图标',
-      dataIndex: 'icon',
-      key: 'icon',
+      dataIndex: 'IconName',
+      key: 'IconName',
+    }, {
+      title: '描述',
+      dataIndex: 'Description',
+      key: 'Description',
     }];
 
     return (
@@ -150,7 +160,7 @@ export default class Menu extends PureComponent {
             treeList && treeList.length > 0 &&
               <DisplayTree
                 treeList={[{
-                  id: '-1',
+                  id: '0',
                   name: '菜单管理',
                   children: treeList,
                 }]}
@@ -174,7 +184,7 @@ export default class Menu extends PureComponent {
                   {...formItemLayout}
                   label="名称"
                 >
-                  {getFieldDecorator('name', {
+                  {getFieldDecorator('Name', {
                     rules: [{
                       required: true, message: '请输入名称',
                     }],
@@ -186,7 +196,7 @@ export default class Menu extends PureComponent {
                   {...formItemLayout}
                   label="路径"
                 >
-                  {getFieldDecorator('path', {
+                  {getFieldDecorator('Path', {
                     rules: [{
                       required: true, message: '请输入路径',
                     }],
@@ -198,8 +208,16 @@ export default class Menu extends PureComponent {
                   {...formItemLayout}
                   label="图标"
                 >
-                  {getFieldDecorator('icon')(
+                  {getFieldDecorator('IconName')(
                     <Input />,
+                  )}
+                </FormItem>
+                <FormItem
+                  {...formItemLayout}
+                  label="描述"
+                >
+                  {getFieldDecorator('Description')(
+                    <TextArea autosize />,
                   )}
                 </FormItem>
               </Form>
