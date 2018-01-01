@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Layout, Form, Input, Button, Table, Modal } from 'antd';
+import { Layout, Form, Input, Button, Table, Modal, Radio } from 'antd';
 
 import DisplayTree from '../../../components/DisplayTree';
 import styles from './index.less';
@@ -9,6 +9,7 @@ const FormItem = Form.Item;
 
 const { Sider, Content } = Layout;
 const { TextArea } = Input;
+const RadioGroup = Radio.Group;
 
 
 @connect(state => ({
@@ -25,7 +26,7 @@ const { TextArea } = Input;
     });
   },
   mapPropsToFields(props) {
-    console.log('mapPropsToFields', props.currentNode);
+    // console.log('mapPropsToFields', props.currentNode);
     return {
       Name: Form.createFormField({
         ...props.currentNode.Name,
@@ -33,11 +34,17 @@ const { TextArea } = Input;
       Path: Form.createFormField({
         ...props.currentNode.Path,
       }),
+      SortCode: Form.createFormField({
+        ...props.currentNode.SortCode,
+      }),
       IconName: Form.createFormField({
         ...props.currentNode.IconName,
       }),
       Description: Form.createFormField({
         ...props.currentNode.Description,
+      }),
+      IsDisplayed: Form.createFormField({
+        ...props.currentNode.IsDisplayed,
       }),
     };
   },
@@ -206,6 +213,18 @@ export default class Menu extends PureComponent {
                 </FormItem>
                 <FormItem
                   {...formItemLayout}
+                  label="排序代码"
+                >
+                  {getFieldDecorator('SortCode', {
+                    rules: [{
+                      required: true, message: '请输入排序代码',
+                    }],
+                  })(
+                    <Input />,
+                  )}
+                </FormItem>
+                <FormItem
+                  {...formItemLayout}
                   label="图标"
                 >
                   {getFieldDecorator('IconName')(
@@ -220,6 +239,17 @@ export default class Menu extends PureComponent {
                     <TextArea autosize />,
                   )}
                 </FormItem>
+                <FormItem
+                  {...formItemLayout}
+                  label="是否显示"
+                >
+                  {getFieldDecorator('IsDisplayed')(
+                    <RadioGroup>
+                      <Radio value={1}>是</Radio>
+                      <Radio value={0}>否</Radio>
+                    </RadioGroup>,
+                  )}
+                </FormItem>
               </Form>
             </Modal>
           </div>
@@ -229,6 +259,7 @@ export default class Menu extends PureComponent {
             pagination={{ current: 6, pageSize: 5, total: 50 }}
             dataSource={dataSource}
             columns={columns}
+            rowKey="UniqueID"
           />
         </Content>
       </Layout>
