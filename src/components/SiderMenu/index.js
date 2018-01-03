@@ -24,6 +24,7 @@ export default class SiderMenu extends PureComponent {
     });
   }
   getDefaultCollapsedSubMenus(props) {
+    console.log('getDefaultCollapsedSubMenus', props);
     const currentMenuSelectedKeys = [...this.getCurrentMenuSelectedKeys(props)];
     currentMenuSelectedKeys.splice(-1, 1);
     if (currentMenuSelectedKeys.length === 0) {
@@ -31,8 +32,9 @@ export default class SiderMenu extends PureComponent {
     }
     return currentMenuSelectedKeys;
   }
+
+  // 获得当前path的数组 eg： pathname:"/system-management/menu" ==> ["system-management", "menu"]
   getCurrentMenuSelectedKeys(props) {
-    console.log(props);
     const { location: { pathname } } = props || this.props;
     const keys = pathname.split('/').slice(1);
     console.log(keys);
@@ -95,7 +97,9 @@ export default class SiderMenu extends PureComponent {
     });
   }
   handleOpenChange = (openKeys) => {
+    console.log('openkeys', openKeys);
     const lastOpenKey = openKeys[openKeys.length - 1];
+    // 判断最后展开的是否是第一级菜单
     const isMainMenu = this.menus.some(
       item => lastOpenKey && (item.key === lastOpenKey || item.path === lastOpenKey)
     );

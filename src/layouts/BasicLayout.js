@@ -95,11 +95,12 @@ class BasicLayout extends React.PureComponent {
         <Menu.Item key="logout"><Icon type="logout" />退出登录</Menu.Item>
       </Menu>
     );
-
+    console.log('location', location);
     const layout = (
       <Layout>
         {
-          navData && navData.length > 0 &&
+          // 只有匹配到非根路径才渲染菜单，为了保证默认的 openKeys 值正确
+          navData && navData.length > 0 && location.pathname !== '/' &&
           <SiderMenu
             collapsed={collapsed}
             navData={navData}

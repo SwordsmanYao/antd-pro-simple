@@ -26,12 +26,6 @@ const proxy = {
   }),
   'GET /SysManagement/Menu/tree': convertResponseData([
     {
-      id: 234234,
-      name: 'Dashboard',
-      icon: 'dashboard',
-      path: 'table-list',
-    },
-    {
       id: 245345,
       name: '系统管理',
       icon: 'dashboard',
@@ -48,6 +42,12 @@ const proxy = {
           path: 'menuForm',
         }
       ],
+    },
+    {
+      id: 234234,
+      name: 'Dashboard',
+      icon: 'dashboard',
+      path: 'table-list',
     },
   ]),
   'GET /SysManagement/Menu/list': convertResponseData([
