@@ -20,13 +20,16 @@ export default {
     // 当前正在编辑的节点
     currentNode: {
       // 设置初始值
-      // name: {
+      // Name: {
       //   value: '',
       // },
-      // path: {
+      // Path: {
       //   value: '',
       // },
-      // icon: {
+      // IconName: {
+      //   value: '',
+      // },
+      // Description: {
       //   value: '',
       // },
     },
