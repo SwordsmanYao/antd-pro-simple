@@ -65,6 +65,9 @@ export default class Menu extends PureComponent {
     dispatch({
       type: 'menu/fetchTree',
     });
+    dispatch({
+      type: 'menu/fetchMenuList',
+    });
   }
 
   // 点击树节点时触发

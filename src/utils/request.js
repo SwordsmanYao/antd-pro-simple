@@ -60,11 +60,16 @@ function fetch(options) {
 export default function request(options) {
   return fetch(options)
     .then((response) => {
-      if (response.status >= 200 && response.status <= 300) {
-        // 下次请求使用新的 token
-        localStorage.setItem('token', response.headers.authorization);
+      console.log('response', response);
 
+      if (response.status >= 200 && response.status <= 300) {
         const { data } = response;
+
+        if (data.Code === 200) {
+          // 更新本地保存的 token
+          localStorage.setItem('token', response.headers.authorization);
+        }
+
         if (data.Code === 101) { // 数据校验失败
           // 暂时放在这里处理，后面要放在校验信息显示上
           // 展示 data.Error.ModelState 里面的校验数据

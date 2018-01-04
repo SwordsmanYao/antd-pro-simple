@@ -7,7 +7,7 @@ export default {
     // 树结构数据
     treeList: [],
     // 当前选中的树节点id
-    selectedKeys: ['-1'],
+    selectedKeys: ['0'],
     // 列表数据
     menuList: [],
     pagination: {
@@ -55,8 +55,9 @@ export default {
       const selectedKeys = yield select(state => state.selectedKeys);
       const response = yield call(queryMenuList, {
         ...payload,
-        id: selectedKeys,
+        id: '0',
       });
+      console.log('fetchMenuList', response);
       if (response.Code === 200) {
         yield put({
           type: 'saveMenuList',
