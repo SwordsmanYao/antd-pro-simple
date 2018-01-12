@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Layout, Form, Input, Button, Table, Modal, Radio } from 'antd';
+import { Select } from 'antd';
 
 import DisplayTree from '../../../components/DisplayTree';
 import styles from './index.less';
@@ -10,6 +11,7 @@ const FormItem = Form.Item;
 const { Sider, Content } = Layout;
 const { TextArea } = Input;
 const RadioGroup = Radio.Group;
+const Option = Select.Option;
 
 
 @connect(state => ({
@@ -39,6 +41,9 @@ const RadioGroup = Radio.Group;
       }),
       IconName: Form.createFormField({
         ...props.currentNode.IconName,
+      }),
+      Category: Form.createFormField({
+        ...props.currentNode.Category,
       }),
       Description: Form.createFormField({
         ...props.currentNode.Description,
@@ -102,15 +107,21 @@ export default class Menu extends PureComponent {
 
   // 表单提交
   handleSubmit = (e) => {
-    const { form } = this.props;
+    const { form, dispatch, selectedKeys } = this.props;
     e.preventDefault();
-    form.validateFieldsAndScroll((err) => {
+    form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        // dispatch({
-        //   type: 'menu/commitMenu',
-        // }).then((s) => {
-        //   console.log('s', s);
-        // });
+        console.log('values', values);
+        dispatch({
+          type: 'menu/commitMenu',
+          payload: {
+            ...values,
+            MenuID: 8,
+            ParentID: selectedKeys[0],
+          },
+        }).then((s) => {
+          console.log('s', s);
+        });
         this.setModalVisible(false);
       }
     });
@@ -232,6 +243,18 @@ export default class Menu extends PureComponent {
                 >
                   {getFieldDecorator('IconName')(
                     <Input />,
+                  )}
+                </FormItem>
+                <FormItem
+                  {...formItemLayout}
+                  label="类型"
+                >
+                  {getFieldDecorator('Category')(
+                    <Select>
+                      <Option value="1">目录</Option>
+                      <Option value="2">栏目</Option>
+                      <Option value="3">代码</Option>
+                    </Select>,
                   )}
                 </FormItem>
                 <FormItem

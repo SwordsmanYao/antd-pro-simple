@@ -1,4 +1,4 @@
-import { queryMenu, queryMenuList } from '../services/menu';
+import { queryMenu, queryMenuList, insertMenu } from '../services/menu';
 
 export default {
   namespace: 'menu',
@@ -36,6 +36,13 @@ export default {
   },
 
   effects: {
+    *commitMenu({ payload }, { call }) {
+      console.log('commitMenu', payload);
+      const response = yield call(insertMenu, payload);
+      if (response.Code === 200) {
+        console.log('commitMenu', response);
+      }
+    },
     *fetchTree(_, { call, put }) {
       const response = yield call(queryMenu);
       console.log('fetchTree', response);
@@ -55,7 +62,7 @@ export default {
       const selectedKeys = yield select(state => state.selectedKeys);
       const response = yield call(queryMenuList, {
         ...payload,
-        id: '0',
+        id: selectedKeys,
       });
       console.log('fetchMenuList', response);
       if (response.Code === 200) {

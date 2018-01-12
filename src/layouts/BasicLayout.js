@@ -41,9 +41,9 @@ class BasicLayout extends React.PureComponent {
     this.props.dispatch({
       type: 'user/fetchCurrent',
     });
-    // this.props.dispatch({
-    //   type: 'global/fetchMenu',
-    // });
+    this.props.dispatch({
+      type: 'global/fetchMenu',
+    });
   }
   componentWillUnmount() {
     clearTimeout(this.resizeTimeout);
