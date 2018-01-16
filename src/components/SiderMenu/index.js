@@ -138,6 +138,9 @@ export default class SiderMenu extends PureComponent {
           onOpenChange={this.handleOpenChange}
           selectedKeys={this.getCurrentMenuSelectedKeys()}
           style={{ margin: '16px 0', width: '100%' }}
+          onSelect={({ item, key, selectedKeys }) => {
+            console.log('onSelect', item, key, selectedKeys);
+          }}
         >
           {this.getNavMenuItems(this.menus)}
         </Menu>

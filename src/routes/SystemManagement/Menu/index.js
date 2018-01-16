@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Layout, Form, Input, Button, Table, Modal, Radio } from 'antd';
-import { Select } from 'antd';
+import { Layout, Form, Input, Button, Table, Modal, Radio, Divider, Select, Popconfirm, Row, Col } from 'antd';
 
 import DisplayTree from '../../../components/DisplayTree';
 import styles from './index.less';
@@ -11,13 +10,17 @@ const FormItem = Form.Item;
 const { Sider, Content } = Layout;
 const { TextArea } = Input;
 const RadioGroup = Radio.Group;
-const Option = Select.Option;
+const { Option } = Select;
 
 
 @connect(state => ({
   selectedKeys: state.menu.selectedKeys,
   treeList: state.menu.treeList,
+  menuList: state.menu.menuList,
+  pagination: state.menu.pagination,
+  menuListLoading: state.menu.loading,
   currentNode: state.menu.currentNode,
+  navData: state.global.menu,
 }))
 @Form.create({
   onFieldsChange(props, changedFields) {
@@ -66,12 +69,17 @@ export default class Menu extends PureComponent {
   }
 
   componentWillMount() {
-    const { dispatch } = this.props;
+    const { dispatch, selectedKeys, pagination } = this.props;
     dispatch({
       type: 'menu/fetchTree',
     });
     dispatch({
       type: 'menu/fetchMenuList',
+      payload: {
+        ParentID: selectedKeys[0],
+        PageSize: pagination.pageSize,
+        CurrentPage: pagination.current,
+      },
     });
   }
 
@@ -84,11 +92,31 @@ export default class Menu extends PureComponent {
       type: 'menu/saveSelectedKeys',
       payload: selectedKeys,
     });
+
+    dispatch({
+      type: 'menu/fetchMenuList',
+      payload: {
+        ParentID: selectedKeys[0],
+      },
+    });
   }
 
   // 设置模态框显示/隐藏
   setModalVisible(modalVisible) {
     this.setState({ modalVisible });
+  }
+
+  // 获取对应路径下的 menuid
+  getCurrentSelectedMenuId = (pathArr, navData) => {
+    for (let i = 0; i < navData.length; i++) {
+      if (pathArr[0] === navData[i].path) {
+        if (pathArr.length === 1 || !navData[i].children) {
+          return navData[i].id;
+        } else {
+          return this.getCurrentSelectedMenuId(pathArr.slice(1), navData[i].children);
+        }
+      }
+    }
   }
 
   // 新建
@@ -100,25 +128,52 @@ export default class Menu extends PureComponent {
     });
   }
   // 修改
-  handleEdit = () => {
+  handleEdit = (record) => {
+    const { dispatch } = this.props;
+    console.log(record);
+
+    dispatch({
+      type: 'menu/fetchMenuDetail',
+      payload: {
+        ...record,
+      },
+    });
     this.setModalVisible(true);
-    // fetch detail
+  }
+  // 删除
+  handleDelete = (record) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'menu/deleteMenu',
+      payload: {
+        ...record,
+      },
+    });
   }
 
   // 表单提交
   handleSubmit = (e) => {
-    const { form, dispatch, selectedKeys } = this.props;
+    const { form, dispatch, selectedKeys, history, navData, currentNode } = this.props;
+
+    const pathArr = history.location.pathname.split('/').slice(1);
+
+    const MenuID = this.getCurrentSelectedMenuId(pathArr, navData);
+
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('values', values);
+        const payload = {
+          ...values,
+          MenuID,
+          ParentID: selectedKeys[0],
+        };
+        if (currentNode.UniqueID && currentNode.UniqueID.value) {
+          payload.UniqueID = currentNode.UniqueID.value;
+        }
         dispatch({
           type: 'menu/commitMenu',
-          payload: {
-            ...values,
-            MenuID: 8,
-            ParentID: selectedKeys[0],
-          },
+          payload,
         }).then((s) => {
           console.log('s', s);
         });
@@ -127,34 +182,26 @@ export default class Menu extends PureComponent {
     });
   }
 
+  handleTableChange = (pagination, filters, sorter) => {
+    console.log('pagination', pagination);
+    console.log('filters', filters);
+    console.log('sorter', sorter);
+  }
+
   render() {
-    const { selectedKeys, treeList } = this.props;
+    const { selectedKeys, treeList, menuList, pagination, menuListLoading } = this.props;
     const { getFieldDecorator } = this.props.form;
 
     const formItemLayout = {
       labelCol: {
-        xs: { span: 12 },
+        xs: { span: 8 },
         sm: { span: 8 },
       },
       wrapperCol: {
-        xs: { span: 12 },
-        sm: { span: 8 },
+        xs: { span: 16 },
+        sm: { span: 16 },
       },
     };
-
-    const dataSource = [{
-      UniqueID: '1',
-      Name: '测试',
-      Path: 'test',
-      IconName: 'ttest',
-      Description: '234234234',
-    }, {
-      UniqueID: '2',
-      Name: '测试',
-      Path: 'test',
-      IconName: 'ttest',
-      Description: '234234234',
-    }];
 
     const columns = [{
       title: '名称',
@@ -165,13 +212,38 @@ export default class Menu extends PureComponent {
       dataIndex: 'Path',
       key: 'Path',
     }, {
-      title: '图标',
-      dataIndex: 'IconName',
-      key: 'IconName',
+      title: '排序',
+      dataIndex: 'SortCode',
+      key: 'SortCode',
     }, {
-      title: '描述',
-      dataIndex: 'Description',
-      key: 'Description',
+      title: '操作',
+      key: 'Action',
+      width: 120,
+      render: (text, record) => (
+        <span>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              this.handleEdit(record);
+            }}
+          >编辑
+          </a>
+          <Divider type="vertical" />
+          <Popconfirm placement="bottom" title="如果有子节点会一同删除，确认要删除这条记录吗？" onConfirm={() => { this.handleDelete(record); }} okText="Yes" cancelText="No">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >删除
+            </a>
+          </Popconfirm>
+
+        </span>
+      ),
     }];
 
     return (
@@ -201,91 +273,116 @@ export default class Menu extends PureComponent {
               onCancel={() => this.setModalVisible(false)}
             >
               <Form>
-                <FormItem
-                  {...formItemLayout}
-                  label="名称"
-                >
-                  {getFieldDecorator('Name', {
-                    rules: [{
-                      required: true, message: '请输入名称',
-                    }],
-                  })(
-                    <Input />,
-                  )}
-                </FormItem>
-                <FormItem
-                  {...formItemLayout}
-                  label="路径"
-                >
-                  {getFieldDecorator('Path', {
-                    rules: [{
-                      required: true, message: '请输入路径',
-                    }],
-                  })(
-                    <Input />,
-                  )}
-                </FormItem>
-                <FormItem
-                  {...formItemLayout}
-                  label="排序代码"
-                >
-                  {getFieldDecorator('SortCode', {
-                    rules: [{
-                      required: true, message: '请输入排序代码',
-                    }],
-                  })(
-                    <Input />,
-                  )}
-                </FormItem>
-                <FormItem
-                  {...formItemLayout}
-                  label="图标"
-                >
-                  {getFieldDecorator('IconName')(
-                    <Input />,
-                  )}
-                </FormItem>
-                <FormItem
-                  {...formItemLayout}
-                  label="类型"
-                >
-                  {getFieldDecorator('Category')(
-                    <Select>
-                      <Option value="1">目录</Option>
-                      <Option value="2">栏目</Option>
-                      <Option value="3">代码</Option>
-                    </Select>,
-                  )}
-                </FormItem>
-                <FormItem
-                  {...formItemLayout}
-                  label="描述"
-                >
-                  {getFieldDecorator('Description')(
-                    <TextArea autosize />,
-                  )}
-                </FormItem>
-                <FormItem
-                  {...formItemLayout}
-                  label="是否显示"
-                >
-                  {getFieldDecorator('IsDisplayed')(
-                    <RadioGroup>
-                      <Radio value={1}>是</Radio>
-                      <Radio value={0}>否</Radio>
-                    </RadioGroup>,
-                  )}
-                </FormItem>
+                <Row gutter={24} >
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="名称"
+                    >
+                      {getFieldDecorator('Name', {
+                        rules: [{
+                          required: true, message: '请输入名称',
+                        }],
+                      })(
+                        <Input />,
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="路径"
+                    >
+                      {getFieldDecorator('Path', {
+                        rules: [{
+                          required: true, message: '请输入路径',
+                        }],
+                      })(
+                        <Input />,
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="排序代码"
+                    >
+                      {getFieldDecorator('SortCode', {
+                        rules: [{
+                          required: true, message: '请输入数字格式排序代码', pattern: /^[0-9]*$/,
+                        }],
+                      })(
+                        <Input />,
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="图标"
+                    >
+                      {getFieldDecorator('IconName')(
+                        <Input />,
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="类型"
+                    >
+                      {getFieldDecorator('Category', {
+                        rules: [{
+                          required: true, message: '请选择类型',
+                        }],
+                      })(
+                        <Select>
+                          <Option value={1}>目录</Option>
+                          <Option value={2}>栏目</Option>
+                          <Option value={3}>代码</Option>
+                        </Select>,
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="描述"
+                    >
+                      {getFieldDecorator('Description')(
+                        <TextArea autosize />,
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="是否显示"
+                    >
+                      {getFieldDecorator('IsDisplayed', {
+                        rules: [{
+                          required: true, message: '请选择是否显示',
+                        }],
+                      })(
+                        <RadioGroup>
+                          <Radio value={1}>是</Radio>
+                          <Radio value={0}>否</Radio>
+                        </RadioGroup>,
+                      )}
+                    </FormItem>
+                  </Col>
+                </Row>
               </Form>
             </Modal>
           </div>
           <Table
             bordered
-            loading={false}
-            pagination={{ current: 6, pageSize: 5, total: 50 }}
-            dataSource={dataSource}
+            loading={menuListLoading}
+            pagination={pagination}
+            dataSource={menuList}
             columns={columns}
             rowKey="UniqueID"
+            onChange={this.handleTableChange}
           />
         </Content>
       </Layout>
