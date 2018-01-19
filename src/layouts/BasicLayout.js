@@ -2,7 +2,7 @@ import React from 'react';
 import DocumentTitle from 'react-document-title';
 
 import { connect } from 'dva';
-import { Route, Redirect, Switch } from 'dva/router';
+import { Route, Switch, Redirect } from 'dva/router';
 import { Layout, Menu, Icon, Avatar, Dropdown, Spin } from 'antd';
 
 import GlobalFooter from 'ant-design-pro/lib/GlobalFooter';
@@ -54,6 +54,15 @@ class BasicLayout extends React.PureComponent {
       this.props.dispatch({
         type: 'user/logout',
       });
+    }
+  }
+
+  // 菜单数据的第一个要展示的 path
+  getFirstShowPath(navData, parentPath = '') {
+    if (navData[0].hasChildren && navData[0].children) {
+      return this.getFirstShowPath(navData[0].children, `${parentPath}/${navData[0].path}`);
+    } else {
+      return `${parentPath}/${navData[0].path}`;
     }
   }
 
@@ -141,7 +150,9 @@ class BasicLayout extends React.PureComponent {
                   )
                 )
               }
-              <Redirect exact from="/" to="/system-management/menu" />
+              {
+                navData && navData.length > 0 && <Redirect from="/" to={this.getFirstShowPath(navData)} />
+              }
             </Switch>
             <GlobalFooter
               copyright={
