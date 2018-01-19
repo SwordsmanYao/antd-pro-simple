@@ -4,6 +4,7 @@ import { Layout, Form, Input, Button, Table, Modal, Radio, Divider, Select, Popc
 
 import DisplayTree from '../../../components/DisplayTree';
 import styles from './index.less';
+import { getUrlParam } from '../../../utils/utils';
 
 const FormItem = Form.Item;
 
@@ -129,13 +130,16 @@ export default class Menu extends PureComponent {
   }
   // 修改
   handleEdit = (record) => {
-    const { dispatch } = this.props;
+    const { dispatch, location } = this.props;
     console.log(record);
+
+    const MenuID = getUrlParam(location, 'menuID');
 
     dispatch({
       type: 'menu/fetchMenuDetail',
       payload: {
         ...record,
+        MenuID,
       },
     });
     this.setModalVisible(true);
@@ -153,11 +157,9 @@ export default class Menu extends PureComponent {
 
   // 表单提交
   handleSubmit = (e) => {
-    const { form, dispatch, selectedKeys, history, navData, currentNode } = this.props;
+    const { form, dispatch, selectedKeys, location, currentNode } = this.props;
 
-    const pathArr = history.location.pathname.split('/').slice(1);
-
-    const MenuID = this.getCurrentSelectedMenuId(pathArr, navData);
+    const MenuID = getUrlParam(location, 'menuID');
 
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {

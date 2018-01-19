@@ -84,7 +84,10 @@ export default class SiderMenu extends PureComponent {
               </a>
             ) : (
               <Link
-                to={itemPath}
+                to={{
+                  pathname: itemPath,
+                  search: `?menuID=${item.id}`,
+                }}
                 target={item.target}
                 replace={itemPath === this.props.location.pathname}
               >

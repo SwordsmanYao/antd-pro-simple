@@ -1,4 +1,5 @@
 import moment from 'moment';
+import queryString from 'query-string';
 
 export function fixedZero(val) {
   return val * 1 < 10 ? `0${val}` : val;
@@ -91,4 +92,8 @@ export function digitUppercase(n) {
   }
 
   return s.replace(/(零.)*零元/, '元').replace(/(零.)+/g, '零').replace(/^整$/, '零元整');
+}
+
+export function getUrlParam(location, name) {
+  return queryString.parse(location.search)[name];
 }

@@ -58,11 +58,14 @@ class BasicLayout extends React.PureComponent {
   }
 
   // 菜单数据的第一个要展示的 path
-  getFirstShowPath(navData, parentPath = '') {
+  getFirstShow(navData, parentPath = '') {
     if (navData[0].hasChildren && navData[0].children) {
-      return this.getFirstShowPath(navData[0].children, `${parentPath}/${navData[0].path}`);
+      return this.getFirstShow(navData[0].children, `${parentPath}/${navData[0].path}`);
     } else {
-      return `${parentPath}/${navData[0].path}`;
+      return {
+        pathname: `${parentPath}/${navData[0].path}`,
+        search: `?menuID=${navData[0].id}`,
+      };
     }
   }
 
@@ -151,7 +154,11 @@ class BasicLayout extends React.PureComponent {
                 )
               }
               {
-                navData && navData.length > 0 && <Redirect from="/" to={this.getFirstShowPath(navData)} />
+                navData && navData.length > 0 &&
+                <Redirect
+                  from="/"
+                  to={this.getFirstShow(navData)}
+                />
               }
             </Switch>
             <GlobalFooter
